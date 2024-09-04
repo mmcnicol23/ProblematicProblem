@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Linq;
 
-//object ProblematicProblem;
 //ProblematicProblem
 Random rng = null;
 var activities = new List<string>()
@@ -27,7 +25,7 @@ if (cont == "yes")
     var userName = Console.ReadLine();
     Console.WriteLine($"Nice to meet you, {userName}!");
 
-    //Get their age
+    //Get their age - we will use later to see if they can go wine tasting
     Console.WriteLine("What is your age?");
     var userAge = int.Parse(Console.ReadLine());
 
@@ -39,7 +37,7 @@ if (cont == "yes")
         while (showList != "sure" && showList != "no thanks")
         {
             Console.WriteLine("Invalid entry. Please enter only sure or no thanks.");
-            cont = Console.ReadLine();
+            Console.ReadLine();
         }
 
         if (showList == "sure")
@@ -54,7 +52,7 @@ if (cont == "yes")
     Console.WriteLine("Would you like to add any activities before we generate one? yes/no: ");
     var addActivity = Console.ReadLine();
 
-    if (addActivity == "yes")
+    while (addActivity == "yes")
     {
         //let them add to the list
         Console.WriteLine("What would you like to add?");
@@ -72,7 +70,6 @@ if (cont == "yes")
         var addYes = Console.ReadLine();
 
         if (addYes == "yes")
-
         {
             Console.WriteLine("What else would you like to add?");
             var addMore = Console.ReadLine();
@@ -83,64 +80,64 @@ if (cont == "yes")
                 Console.WriteLine(activity);
             }
         }
+    }
 
-        //if they don't want to add more, continue to choosing their random activity:
+    //if they don't want to add more, continue to choosing their random activity:
+
+    {
+        Console.WriteLine("Now let's choose your random activity from the list!");
+
+        Console.WriteLine("Connecting to the database");
+        for (int i = 0; i < 5; i++)
+        {
+            Console.Write(". ");
+            Console.WriteLine();
+            Thread.Sleep(500);
+        }
+
+
+        Console.WriteLine("Choosing your random activity...");
+        rng = new Random();
+        int randomNumber = rng.Next(activities.Count);
+        string randomActivity = activities[randomNumber];
+
+        //if user under 21 years old, do not let them have Wine Tasting
+        if (userAge < 21 && randomActivity == "Wine Tasting")
+        {
+            Console.WriteLine($"Oh no! Looks like you are too young to do {randomActivity}");
+            Console.WriteLine("Picking another random activity...");
+            activities.Remove(randomActivity);
+            randomNumber = rng.Next(activities.Count);
+            randomActivity = activities[randomNumber];
+            Console.WriteLine($"Your random activity is {randomActivity}!");
+        }
         else
         {
-            Console.WriteLine("Now let's choose your random activity from the list!");
+            Console.WriteLine(
+                $"Ah got it! {userName}, your random activity is: {randomActivity}! Is this ok or do you want to grab another activity? Keep/Redo: ");
+            var choice = Console.ReadLine();
 
-            Console.WriteLine("Connecting to the database");
-            for (int i = 0; i < 5; i++)
+            if (choice == "keep")
             {
-                Console.Write(". ");
-                Console.WriteLine();
-                Thread.Sleep(500);
+                Console.WriteLine("Great, have fun doing your activity!");
             }
 
-
-            Console.WriteLine("Choosing your random activity...");
-            rng = new Random();
-            int randomNumber = rng.Next(activities.Count);
-            string randomActivity = activities[randomNumber];
-            
-            //if user under 21 years old, do not let them have Wine Tasting
-            if (userAge < 21 && randomActivity == "Wine Tasting")
+            //let user get a new activity
+            else if (choice == "redo")
             {
-                Console.WriteLine($"Oh no! Looks like you are too young to do {randomActivity}");
-                Console.WriteLine("Picking another random activity...");
+                Console.WriteLine("Got it. Choosing another random activity for you...");
                 activities.Remove(randomActivity);
                 randomNumber = rng.Next(activities.Count);
                 randomActivity = activities[randomNumber];
-                Console.WriteLine($"Your random activity is {randomActivity}!");
+                Console.WriteLine($"Your NEW random activity is {randomActivity}! Have fun!");
             }
             else
             {
-                Console.WriteLine(
-                    $"Ah got it! {userName}, your random activity is: {randomActivity}! Is this ok or do you want to grab another activity? Keep/Redo: ");
-                var choice = Console.ReadLine();
-
-                if (choice == "keep")
-                {
-                    Console.WriteLine("Great, have fun doing your activity!");
-                }
-                
-                //let user get a new activity
-                else if (choice == "redo")
-                {
-                    Console.WriteLine("Got it. Choosing another random activity for you...");
-                    activities.Remove(randomActivity);
-                    randomNumber = rng.Next(activities.Count);
-                    randomActivity = activities[randomNumber];
-                    Console.WriteLine($"Your NEW random activity is {randomActivity}! Have fun!");
-                }
-                else
-                {
-                    Console.WriteLine("Please enter 'keep' to stick with your activity or 'redo' to select a new one.");
-                }
+                Console.WriteLine("Please enter 'keep' to stick with your activity or 'redo' to select a new one.");
             }
-
         }
 
     }
 }
+    
 
